@@ -1,17 +1,20 @@
 class Solution {
 public:
+    int happy(int n) {
+        int ans = 0;
+        while (n) {
+            ans+=(n%10)*(n%10);
+            n/=10;
+        }
+        return ans;
+    }
     bool isHappy(int n) {
-        map<int, bool> m;
-        m[n]=1;
-        while (n!=1) {
-            int tmp = 0;
-            while (n) {
-                tmp+=(n%10)*(n%10);
-                n/=10;
-            }
-            if (m[tmp]) return false;
-            m[tmp]=1;
-            n = tmp;
+        int slow = n, fast = n;
+        while (fast!=1) {
+            slow = happy(slow);
+            fast = happy(fast);
+            fast = happy(fast);
+            if (slow==fast && slow!=1) return false;
         }
         return true;
     }
