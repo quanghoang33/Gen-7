@@ -1,6 +1,6 @@
-mod lession_01;
+mod lesson_01;
 
-use lession_01::*;
+use lesson_01::*;
 
 fn main() {
     println!(
