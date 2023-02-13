@@ -18,8 +18,10 @@ class Solution:
     def reverse(self, head):
         if head is None or head.next is None:
             return head
-
         newHead = self.reverse(head.next)
+        head.next.next = head
+        head.next = None
+        return newHead
 
 
 
@@ -33,7 +35,7 @@ node5 = ListNode(7)
 node1.next = node2
 node2.next = node3
 node3.next = node4
-node4.next = node5
+node4.next = node5 
 
 node = node1
 while node:
@@ -42,7 +44,8 @@ while node:
 
 print("/----------Reverse Linked List: -----------/")
 
-node1 = Solution().reverseList(node1)
+# node1 = Solution().reverseList(node1)
+node1 = Solution().reverse(node1)
 node = node1
 while node:
     print(node.val)
