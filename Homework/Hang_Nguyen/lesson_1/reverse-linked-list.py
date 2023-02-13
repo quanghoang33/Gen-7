@@ -3,6 +3,7 @@ class ListNode:
         self.val = val
         self.next = next
 class Solution:
+    # iterative way
     def reverseList(self, head):
         prev = None
         current = head
@@ -12,3 +13,37 @@ class Solution:
             prev = current
             current = next
         return prev
+
+    # recursive way
+    def reverse(self, head):
+        if head is None or head.next is None:
+            return head
+
+        newHead = self.reverse(head.next)
+
+
+
+# TEST CASE
+node1 = ListNode(5)
+node2 = ListNode(9)
+node3 = ListNode(12)
+node4 = ListNode(8)
+node5 = ListNode(7)
+
+node1.next = node2
+node2.next = node3
+node3.next = node4
+node4.next = node5
+
+node = node1
+while node:
+    print(node.val)
+    node = node.next
+
+print("/----------Reverse Linked List: -----------/")
+
+node1 = Solution().reverseList(node1)
+node = node1
+while node:
+    print(node.val)
+    node = node.next
