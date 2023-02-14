@@ -38,7 +38,7 @@ pub fn hamming_weight(n: u32) -> i32 {
 }
 
 struct NumArray {
-    nums: Vec<i32>,
+    prefix_sum: Vec<i32>,
 }
 
 /**
@@ -46,22 +46,26 @@ struct NumArray {
  * If you need a mutable reference, change it to `&mut self` instead.
  */
 impl NumArray {
-    fn new(nums: Vec<i32>) -> Self {
-        return NumArray { nums };
+    fn new(mut nums: Vec<i32>) -> Self {
+        for i in 1..nums.len() {
+            nums[i] = nums[i] + nums[i - 1];
+        }
+
+        return NumArray { prefix_sum: nums };
     }
 
     /**
-     * Dùng vòng lặp.
+     * Dùng prefix sum.
      *
-     * Runtime Complexity: O(n * m) với n là số queries, và m là nums.len().
+     * Runtime Complexity: O(n + m) với n là số queries, và m là nums.len().
      * Space Complexity: O(1).
      */
     fn sum_range(&self, left: i32, right: i32) -> i32 {
-        let mut result = 0;
-        for i in left..=right {
-            result += self.nums[i as usize];
-        }
-        return result;
+        return if left == 0 {
+            self.prefix_sum[right as usize]
+        } else {
+            self.prefix_sum[right as usize] - self.prefix_sum[(left - 1) as usize]
+        };
     }
 }
 
