@@ -3,6 +3,7 @@ pub mod lesson_01;
 use lesson_01::hamming_weight::hamming_weight;
 use lesson_01::range_sum_query_2d_immutable::*;
 use lesson_01::range_sum_query_immutable::*;
+use lesson_01::reverse_linked_list::*;
 use lesson_01::single_number::single_number;
 use lesson_01::sort_array_by_parity::sort_array_by_parity;
 
@@ -40,5 +41,12 @@ fn main() {
         "Sort array by parity if {:?}: {:?}",
         nums,
         sort_array_by_parity(nums.clone())
-    )
+    );
+
+    let head = Some(Box::new(create_a_1_2_3_4_5_linked_list()));
+    println!(
+        "Reversed of list {:?}: {:?}",
+        head.clone(),
+        reverse_list(head)
+    );
 }
