@@ -4,6 +4,7 @@ use lesson_01::hamming_weight::hamming_weight;
 use lesson_01::range_sum_query_2d_immutable::*;
 use lesson_01::range_sum_query_immutable::*;
 use lesson_01::single_number::single_number;
+use lesson_01::sort_array_by_parity::sort_array_by_parity;
 
 fn main() {
     println!(
@@ -33,4 +34,11 @@ fn main() {
         num_matrix,
         num_matrix.sum_region(2, 1, 4, 3)
     );
+
+    let nums = vec![3, 1, 2, 4];
+    println!(
+        "Sort array by parity if {:?}: {:?}",
+        nums,
+        sort_array_by_parity(nums.clone())
+    )
 }
