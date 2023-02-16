@@ -3,10 +3,8 @@ class Solution:
         last = len(nums) - 1
         begin = 0
         while begin < last: 
-            if nums[begin] % 2 != 0: 
-                temp = nums[begin]
-                nums[begin] = nums[last]
-                nums[last] = temp
+            if nums[begin] % 2 != 0:
+                nums[begin], nums[last] = nums[last], nums[begin]
                 last -=1           
             else: 
                 begin +=1           
