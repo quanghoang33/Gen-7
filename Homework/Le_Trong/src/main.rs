@@ -1,11 +1,13 @@
 pub mod lesson_01;
 
 use lesson_01::hamming_weight::hamming_weight;
+use lesson_01::happy_number::is_happy;
 use lesson_01::range_sum_query_2d_immutable::*;
 use lesson_01::range_sum_query_immutable::*;
 use lesson_01::reverse_linked_list::*;
 use lesson_01::single_number::single_number;
 use lesson_01::sort_array_by_parity::sort_array_by_parity;
+use lesson_01::subsets::subsets;
 
 fn main() {
     println!(
@@ -48,5 +50,15 @@ fn main() {
         "Reversed of list {:?}: {:?}",
         head.clone(),
         reverse_list(head)
+    );
+
+    println!("{} is happy number? {:?}", 19, is_happy(19));
+    println!("{} is happy number? {:?}", 1, is_happy(1));
+    println!("{} is happy number? {:?}", 2, is_happy(2));
+
+    println!(
+        "subsets of {:?}: {:?}",
+        vec![1, 2, 3],
+        subsets(vec![1, 2, 3])
     );
 }

@@ -42,6 +42,25 @@ mod tests {
             Some(Box::new(create_a_5_4_3_2_1_linked_list()))
         );
     }
+
+    fn create_a_5_4_3_2_1_linked_list() -> ListNode {
+        let mut head = ListNode::new(5);
+        head.next = Some(Box::new(ListNode::new(4)));
+        head.next.as_mut().unwrap().next = Some(Box::new(ListNode::new(3)));
+        head.next.as_mut().unwrap().next.as_mut().unwrap().next = Some(Box::new(ListNode::new(2)));
+        head.next
+            .as_mut()
+            .unwrap()
+            .next
+            .as_mut()
+            .unwrap()
+            .next
+            .as_mut()
+            .unwrap()
+            .next = Some(Box::new(ListNode::new(1)));
+
+        return head;
+    }
 }
 
 pub fn create_a_1_2_3_4_5_linked_list() -> ListNode {
@@ -59,25 +78,6 @@ pub fn create_a_1_2_3_4_5_linked_list() -> ListNode {
         .as_mut()
         .unwrap()
         .next = Some(Box::new(ListNode::new(5)));
-
-    return head;
-}
-
-fn create_a_5_4_3_2_1_linked_list() -> ListNode {
-    let mut head = ListNode::new(5);
-    head.next = Some(Box::new(ListNode::new(4)));
-    head.next.as_mut().unwrap().next = Some(Box::new(ListNode::new(3)));
-    head.next.as_mut().unwrap().next.as_mut().unwrap().next = Some(Box::new(ListNode::new(2)));
-    head.next
-        .as_mut()
-        .unwrap()
-        .next
-        .as_mut()
-        .unwrap()
-        .next
-        .as_mut()
-        .unwrap()
-        .next = Some(Box::new(ListNode::new(1)));
 
     return head;
 }
