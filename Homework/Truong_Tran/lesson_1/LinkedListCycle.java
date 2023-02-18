@@ -3,15 +3,22 @@ package hackerank;
 public class LinkedListCycle {
 
     public boolean hasCycle(ListNode head) {
-        Map<ListNode, Boolean> mark = new HashMap<>();
-        ListNode current = head;
-        while ( current != null) {
-            if (mark.get(current) != null && mark.get(current)) {
+        if (head == null) {
+            return false;
+        }
+        ListNode p1 = head.next;
+        if (head.next == null) {
+            return false;
+        }
+        ListNode p2 = head.next.next;
+        while(p2 != null && p2.next != null) {
+            if (p1 == p2) {
                 return true;
             }
-            mark.put(current, true);
-            current = current.next;
+            p1 = p1.next;
+            p2 = p2.next.next;
         }
         return false;
     }
+
 }
