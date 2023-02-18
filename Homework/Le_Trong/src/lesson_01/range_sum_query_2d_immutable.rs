@@ -9,14 +9,12 @@ pub struct NumMatrix {
  */
 impl NumMatrix {
     pub fn new(matrix: Vec<Vec<i32>>) -> Self {
-        let mut prefix_sum = vec![vec![0 as i32; matrix[0].len()]; matrix.len()];
+        let mut prefix_sum = vec![vec![0 as i32; matrix[0].len() + 1]; matrix.len() + 1];
         for row in 0..matrix.len() {
             for col in 0..matrix[row].len() {
-                prefix_sum[row][col] = if col == 0 {
-                    matrix[row][col] as i32
-                } else {
-                    prefix_sum[row][col - 1] + matrix[row][col] as i32
-                };
+                prefix_sum[row + 1][col + 1] = prefix_sum[row][col + 1] + prefix_sum[row + 1][col]
+                    - prefix_sum[row][col]
+                    + matrix[row][col];
             }
         }
 
@@ -28,22 +26,14 @@ impl NumMatrix {
      * Vì là mảng 2d nên sẽ cần thêm một bước là phải cộng
      * sum của các hàng lại.
      *
-     * Runtime Complextiy: O(n*m + q) với n*m là số phần tử trong mảng 2d, q là số queries.
-     * Space Complextiy: O(n*m + q) với n*m là số phần tử trong mảng 2d, q là số queries.
+     * Runtime Complextiy: O(1).
+     * Space Complextiy: O(n*m) với n*m là số phần tử trong mảng 2d.
      */
     pub fn sum_region(&self, row1: i32, col1: i32, row2: i32, col2: i32) -> i32 {
-        let mut result = 0;
-
-        for row in row1..=row2 {
-            result += if col1 == 0 {
-                self.prefix_sum[row as usize][col2 as usize]
-            } else {
-                self.prefix_sum[row as usize][col2 as usize]
-                    - self.prefix_sum[row as usize][(col1 - 1) as usize]
-            };
-        }
-
-        return result as i32;
+        return self.prefix_sum[(row2 + 1) as usize][(col2 + 1) as usize]
+            - self.prefix_sum[(row1) as usize][(col2 + 1) as usize]
+            - self.prefix_sum[(row2 + 1) as usize][(col1) as usize]
+            + self.prefix_sum[(row1) as usize][(col1) as usize];
     }
 }
 
