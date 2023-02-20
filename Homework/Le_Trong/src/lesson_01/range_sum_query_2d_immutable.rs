@@ -12,12 +12,14 @@ impl NumMatrix {
         let mut prefix_sum = vec![vec![0 as i32; matrix[0].len() + 1]; matrix.len() + 1];
         for row in 0..matrix.len() {
             for col in 0..matrix[row].len() {
-                prefix_sum[row + 1][col + 1] = prefix_sum[row][col + 1] + prefix_sum[row + 1][col]
-                    - prefix_sum[row][col]
-                    + matrix[row][col];
+                let row = row as usize;
+                let col = col as usize;
+                prefix_sum[row + 1][col + 1] =
+                    prefix_sum[row + 1][col] + prefix_sum[row][col + 1] + matrix[row][col]
+                        - prefix_sum[row][col];
             }
         }
-
+        println!("prefix sum: {:?}", prefix_sum);
         return Self { prefix_sum };
     }
 
@@ -30,10 +32,15 @@ impl NumMatrix {
      * Space Complextiy: O(n*m) với n*m là số phần tử trong mảng 2d.
      */
     pub fn sum_region(&self, row1: i32, col1: i32, row2: i32, col2: i32) -> i32 {
-        return self.prefix_sum[(row2 + 1) as usize][(col2 + 1) as usize]
-            - self.prefix_sum[(row1) as usize][(col2 + 1) as usize]
-            - self.prefix_sum[(row2 + 1) as usize][(col1) as usize]
-            + self.prefix_sum[(row1) as usize][(col1) as usize];
+        let row1 = row1 as usize;
+        let col1 = col1 as usize;
+        let row2 = row2 as usize;
+        let col2 = col2 as usize;
+
+        return self.prefix_sum[row2 + 1][col2 + 1]
+            - self.prefix_sum[row1][col2 + 1]
+            - self.prefix_sum[row2 + 1][col1]
+            + self.prefix_sum[row1][col1];
     }
 }
 
