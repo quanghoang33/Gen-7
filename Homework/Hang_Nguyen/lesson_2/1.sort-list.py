@@ -15,7 +15,8 @@ class Solution:
         return slow
 
     def merge(self, left, right):
-        tail = dummy = ListNode()
+        tail = ListNode()
+        dummy = tail
         while left and right:
             if left.val < right.val:
                 tail.next = left
