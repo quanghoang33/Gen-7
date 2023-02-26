@@ -2,27 +2,21 @@
 import heapq
 
 class Solution:
-
-    def distance(self, x, y):
+    def distance(self, x, y): 
         return x ** 2 + y ** 2
 
     def kClosest(self, points, k):
-        dict = {}
-        for i in range(len(points)):
-            dict[i] = self.distance(points[i][0], points[i][1])
-        
-        heap = list(dict.values())
-        heapq.heapify(heap)
-        closest = []
-        while k > 0:
-            closestDistance = heapq.heappop(heap)
-            closest.append(closestDistance)
-            k -= 1
-        
+        heap = []
+        for i, (x, y) in enumerate(points):
+            d = self.distance(x, y)
+            if len(heap) == k:
+                heapq.heappushpop(heap, (-d, i))
+            else: 
+                heapq.heappush(heap, (-d, i))
+
         output = []
-        for index, distance in dict.items():
-            if distance in closest:
-                output.append(points[index])
+        for (d, i) in heap:
+            output.append(points[i])
         return output
 
 
