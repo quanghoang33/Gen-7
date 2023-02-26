@@ -37,7 +37,6 @@ class Solution:
             elif c == "(":
                 ops.append(c)
             elif c == ")":
-                # do the math when we encounter a ')' until '('
                 while ops[-1] != "(":
                     nums.append(self.operation(ops.pop(), nums.pop(), nums.pop()))
                 ops.pop()
