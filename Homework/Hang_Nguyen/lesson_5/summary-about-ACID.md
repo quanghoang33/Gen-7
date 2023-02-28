@@ -1,24 +1,26 @@
-ACID stands for: 
+<h3>ACID stands for:</h3>
 
-Atomicity: 
-- takes individual operations and turns them into an all-or-nothing unit of work
-- A transaction must always leave the system in a consistent state, no matter how many concurrent transactions are interleaved at any given time
+**Atomicity**
+- The ability to abort a transaction on error and have all writes from that transaction discarded
 
+*if a transaction was aborted, the application can be sure that it didn’t change anything, so it can safely be retried*
 
-Consistency:
-- constraints are enforced for every committed transaction ( Keys, Data types, Checks and Trigger are successful)
-- no constraint violation is triggered
+**Consistency**
+- Database being in a “good state”
+- No constraint violation is triggered (such as: foreign key, unique,...)
 
+*However, in general, the application defines what data is valid or invalid, the database only stores it.*
 
+**Isolation**
+- Concurrently executing transactions are isolated from each other: they cannot step on each other’s toes
+- The database ensures that when the transactions have committed, the result is the same even though in reality they may have run concurrently
 
+*In practice, serializable isolation is rarely used, because it carries a performance penalty.*
 
-Isolation:
-- the benefit of hiding uncommitted state changes from the outside world, as failing transactions shouldn’t ever corrupt the state of the system
-- using pessimistic or optimistic locking mechanisms
-
-
-
-
-Durability
+**Durability**
 - A successful transaction must permanently change the state of a system
-- If our system is suddenly affected by a system crash or a power outage, then all unfinished committed transactions may be replayed
+- The promise that once a transaction has committed successfully, any data it has written will not be forgotten, even if there is a hardware fault or the database crashes
+
+*a database must wait until writes or replications are completed before reporting a transaction as successfully committed*
+
+*however, perfect durability does not exist, if all your hard disks and all your backups are destroyed at the same time, there’s obviously nothing your database can do to save you*
