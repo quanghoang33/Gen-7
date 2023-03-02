@@ -2,8 +2,6 @@
 // produce the head which is the node that has smallest value, and link to others in ascending
 // order.
 
-use std::mem;
-
 // Definition for singly-linked list.
 #[derive(PartialEq, Eq, Clone, Debug)]
 pub struct ListNode {
@@ -18,36 +16,59 @@ impl ListNode {
     }
 }
 
-/**
- * Runtime Complexity: O(2k + (m * n * log n)) with k is the linked list's length,
- * (m*n*log n) is sort_by_key's runtime.
- *
- * Space Complexity: O(n + m) with n is the vector's length, and
- * m is linked list's length
- */
 fn sort_list(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
-    let mut current_node = head;
-
-    // Convert linked list to a vector nodes
-    // for sorting them later.
-    let mut array = vec![];
-    while let Some(mut node) = current_node.take() {
-        current_node = mem::replace(&mut node.next, None);
-        array.push(node);
+    if head.as_ref().unwrap().next.is_none() {
+        return head;
     }
 
-    // Sort the vector
-    array.sort_by_key(|node| node.as_ref().val);
+    let (right, left) = split(head);
 
-    // Convert back the vector to linked list
-    let mut dummy = ListNode::new(-1);
-    let mut tail = &mut dummy;
-    for node in array {
-        tail.next = Some(node);
-        tail = tail.next.as_mut().unwrap();
+    merge(sort_list(left), sort_list(right))
+}
+
+fn split(mut head: Option<Box<ListNode>>) -> (Option<Box<ListNode>>, Option<Box<ListNode>>) {
+    let mut fast = head.as_ref();
+    let mut prev_mid_len = -1;
+
+    while fast.is_some() && fast.unwrap().next.is_some() {
+        fast = fast.unwrap().next.as_ref().unwrap().next.as_ref();
+        prev_mid_len += 1;
     }
 
-    dummy.next
+    let mut mid = head.as_mut();
+    while prev_mid_len > 0 {
+        mid = mid.unwrap().next.as_mut();
+        prev_mid_len -= 1;
+    }
+
+    (mid.unwrap().next.take(), head)
+}
+
+fn merge(mut left: Option<Box<ListNode>>, mut right: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+    let mut dummy = Some(Box::new(ListNode::new(-1)));
+    let mut curent_node = dummy.as_mut();
+
+    while left.is_some() && right.is_some() {
+        if left.as_ref().unwrap().val > right.as_ref().unwrap().val {
+            let temp = right.as_mut().unwrap().next.take();
+            curent_node.as_mut().unwrap().next = right;
+            curent_node = curent_node.unwrap().next.as_mut();
+            right = temp;
+        } else {
+            let temp = left.as_mut().unwrap().next.take();
+            curent_node.as_mut().unwrap().next = left;
+            curent_node = curent_node.unwrap().next.as_mut();
+            left = temp;
+        }
+    }
+
+    if left.is_some() {
+        curent_node.as_mut().unwrap().next = left;
+    } else if right.is_some() {
+        curent_node.as_mut().unwrap().next = right;
+    }
+
+    dummy.unwrap().next
 }
 
 #[cfg(test)]
@@ -62,7 +83,10 @@ mod tests {
                 val: 3,
                 next: Some(Box::new(ListNode {
                     val: 5,
-                    next: Some(Box::new(ListNode { val: 1, next: None })),
+                    next: Some(Box::new(ListNode {
+                        val: 1,
+                        next: Some(Box::new(ListNode { val: 6, next: None })),
+                    })),
                 })),
             })),
         }));
@@ -77,7 +101,10 @@ mod tests {
                     val: 3,
                     next: Some(Box::new(ListNode {
                         val: 4,
-                        next: Some(Box::new(ListNode { val: 5, next: None })),
+                        next: Some(Box::new(ListNode {
+                            val: 5,
+                            next: Some(Box::new(ListNode { val: 6, next: None }))
+                        })),
                     })),
                 })),
             })),
