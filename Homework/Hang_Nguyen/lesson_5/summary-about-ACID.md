@@ -35,10 +35,25 @@ ACID supports for transactions and Almost all relational databases today, and so
 
 A key feature of a transaction is that it can be aborted and safely retried if an error occurred. ACID databases are based on this philosophy.
 
-<b><h3>Isolation levels</h3></b>
-1. <b>Read Committed:</b> 
+<h3><b>Isolation levels</b> built based on race conditions</h3>
+
+*Dirty Reads*: One client reads another client’s writes before they have been committed
+
+*Dirty Writes*: One client overwrites data that another client has written, but not yet committed
+
+*Read skew (nonrepeatable reads)*: A client sees different parts of the database at different points in time.
+
+*Lost updates*: Two clients concurrently perform a read-modify-write cycle. One overwrites the other’s write without incorporating its changes, so data is lost.
+
+*Write skew*: A transaction reads something, makes a decision based on the value it saw, and writes the decision to the database. However, by the time the write is made, the premise of the decision is no longer true.
+
+*Phantom reads*: A transaction reads objects that match some search condition. Another client makes a write that affects the results of that search.
+
+1. <b>Read Committed:</b>
 - to prevent dirty-writes by using row-level locks, A transaction must hold the lock until it is committed or aborted.
 - to prevent dirty-reads, the database remembers both the old committed value and the new value set by the transaction that currently holds the write lock. Provide old commited value when reading.
 2. <b>Snapshot isolation</b>
+- a key principle of snapshot isolation is <b>readers never block writers, and writers never block readers</b>
 - to prevent read skew: each transaction reads from a consistent snapshot of the database, each transaction sees only the old data from a particular point in time.
-- 
+- implement by using created_by and deleted_by to capture snapshot
+3. <b>Serializable Snapshot Isolation</b>
