@@ -1,3 +1,11 @@
+<b><h3>A Transaction</h3></b>
+
+*A transaction is a way for an application to group several reads and writes together into a logical unit.*
+
+ACID supports for transactions and Almost all relational databases today, and some nonrelational databases, support transactions.
+
+A key feature of a transaction is that it can be aborted and safely retried if an error occurred. ACID databases are based on this philosophy.
+
 <b><h3>ACID stands for:</h3></b>
 
 >**Atomicity**
@@ -27,15 +35,7 @@
 
 *perfect durability does not exist, if all your hard disks and all your backups are destroyed at the same time, there’s obviously nothing your database can do to save you*
 
-<b><h3>A Transaction</h3></b>
-
-*A transaction is a way for an application to group several reads and writes together into a logical unit.*
-
-ACID supports for transactions and Almost all relational databases today, and some nonrelational databases, support transactions.
-
-A key feature of a transaction is that it can be aborted and safely retried if an error occurred. ACID databases are based on this philosophy.
-
-<h3><b>Isolation levels</b> built based on race conditions</h3>
+<h3><b>Isolation levels</b> built based on race conditions as below:</h3>
 
 *Dirty Reads*: One client reads another client’s writes before they have been committed
 
@@ -49,11 +49,27 @@ A key feature of a transaction is that it can be aborted and safely retried if a
 
 *Phantom reads*: A transaction reads objects that match some search condition. Another client makes a write that affects the results of that search.
 
+***Algorithm to prevent those isolation levels:***
 1. <b>Read Committed:</b>
-- to prevent dirty-writes by using row-level locks, A transaction must hold the lock until it is committed or aborted.
-- to prevent dirty-reads, the database remembers both the old committed value and the new value set by the transaction that currently holds the write lock. Provide old commited value when reading.
-2. <b>Snapshot isolation</b>
-- a key principle of snapshot isolation is <b>readers never block writers, and writers never block readers</b>
-- to prevent read skew: each transaction reads from a consistent snapshot of the database, each transaction sees only the old data from a particular point in time.
-- implement by using created_by and deleted_by to capture snapshot
+- use case: dirty-reads, dirty-writes
+- default setting: Oracle 11g, PostgreSQL, SQL Server 2012, MemSQL, and many other databases
+- *how to implement*:
+
+++ to prevent dirty-writes by using row-level locks, A transaction must hold the lock until it is committed or aborted.
+
+++ to prevent dirty-reads, the database remembers both the old committed value and the new value set by the transaction that currently holds the write lock. Provide old commited value when reading.
+
+2. <b>Snapshot isolation (repeatable read)</b>
+- use case: read skew, lost-updates, phantom reads
+- the transaction sees all the data that was committed in the database at the start of the transaction.
+- *how to implement*:
+
+++ readers never block writers, and writers never block readers.
+
+++ implement by using created_by and deleted_by to capture snapshot
+
 3. <b>Serializable Snapshot Isolation</b>
+- use case: write skew
+- *how to implement:*
+- When the transaction wants to commit, the database checks whether any of the ignored writes have now been committed. If so, the transaction must be aborted.
+- When a transaction writes to the database, it must look in the indexes for any other transactions that have recently read the affected data: it simply notifies the transactions that the data they read may no longer be up to date.
