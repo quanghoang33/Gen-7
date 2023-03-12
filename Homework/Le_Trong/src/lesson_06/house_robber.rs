@@ -20,53 +20,24 @@ impl TreeNode {
 }
 
 pub fn rob(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
-    fn dfs(node: Option<&Rc<RefCell<TreeNode>>>) -> i32 {
+    fn dfs(node: Option<&Rc<RefCell<TreeNode>>>) -> (i32, i32) {
         if let Some(node) = node {
             let node_borrow = node.as_ref().borrow();
-            let mut val = node_borrow.val;
-            if let Some(left) = node_borrow.left.as_ref() {
-                match (
-                    left.as_ref().borrow().left.as_ref(),
-                    left.as_ref().borrow().right.as_ref(),
-                ) {
-                    (None, Some(left_right)) => {
-                        val += dfs(None) + dfs(Some(&left_right));
-                    }
-                    (Some(left_left), None) => {
-                        val += dfs(Some(&left_left)) + dfs(None);
-                    }
-                    (Some(left_left), Some(left_right)) => {
-                        val += dfs(Some(&left_left)) + dfs(Some(&left_right));
-                    }
-                    _ => (),
-                }
-            }
 
-            if let Some(right) = node_borrow.right.as_ref() {
-                match (
-                    right.as_ref().borrow().left.as_ref(),
-                    right.as_ref().borrow().right.as_ref(),
-                ) {
-                    (None, Some(right_right)) => {
-                        val += dfs(None) + dfs(Some(&right_right));
-                    }
-                    (Some(right_left), None) => {
-                        val += dfs(Some(&right_left)) + dfs(None);
-                    }
-                    (Some(right_left), Some(right_right)) => {
-                        val += dfs(Some(&right_left)) + dfs(Some(&right_right));
-                    }
-                    _ => (),
-                }
-            }
+            let left = dfs(node_borrow.left.as_ref());
+            let right = dfs(node_borrow.right.as_ref());
 
-            return val.max(dfs(node_borrow.left.as_ref()) + dfs(node_borrow.right.as_ref()));
+            return (
+                node_borrow.val + left.1 + right.1,
+                left.0.max(left.1) + right.0.max(right.1),
+            );
         } else {
-            return 0;
+            return (0, 0);
         }
     }
 
-    return dfs(root.as_ref());
+    let (root_is_robbed, root_is_not_robbed) = dfs(root.as_ref());
+    return root_is_robbed.max(root_is_not_robbed);
 }
 
 #[cfg(test)]
