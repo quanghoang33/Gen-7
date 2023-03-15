@@ -1,5 +1,6 @@
 pub mod lesson_01;
 pub mod lesson_03;
+pub mod lesson_06;
 
 use lesson_01::hamming_weight::hamming_weight;
 use lesson_01::happy_number::is_happy;
@@ -11,10 +12,7 @@ use lesson_01::sort_array_by_parity::sort_array_by_parity;
 use lesson_01::subsets::subsets;
 
 fn main() {
-    println!(
-        "Single number of [2, 2, 1]: {:?}",
-        single_number(vec![2, 2, 1])
-    );
+    println!("Single number of [2, 2, 1]: {:?}", single_number(vec![2, 2, 1]));
 
     println!(
         "Hamming weight of 00000000000000000000000000001011: {}",
@@ -47,19 +45,11 @@ fn main() {
     );
 
     let head = Some(Box::new(create_a_1_2_3_4_5_linked_list()));
-    println!(
-        "Reversed of list {:?}: {:?}",
-        head.clone(),
-        reverse_list(head)
-    );
+    println!("Reversed of list {:?}: {:?}", head.clone(), reverse_list(head));
 
     println!("{} is happy number? {:?}", 19, is_happy(19));
     println!("{} is happy number? {:?}", 1, is_happy(1));
     println!("{} is happy number? {:?}", 2, is_happy(2));
 
-    println!(
-        "subsets of {:?}: {:?}",
-        vec![1, 2, 3],
-        subsets(vec![1, 2, 3])
-    );
+    println!("subsets of {:?}: {:?}", vec![1, 2, 3], subsets(vec![1, 2, 3]));
 }
