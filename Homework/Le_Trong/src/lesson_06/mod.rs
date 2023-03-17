@@ -4,3 +4,4 @@ pub mod longest_univalue_path;
 pub mod max_area_of_island;
 pub mod minimum_genetic_mutation;
 pub mod minimum_knight_moves;
+pub mod shortest_path;
