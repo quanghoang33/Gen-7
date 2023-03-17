@@ -2,6 +2,8 @@
 
 *A transaction is a way for an application to group several reads and writes together into a logical unit.*
 
+- Example: a transfer from one bank account to another: retrive a bank account's amount and then transferred from one account to the other.
+
 ACID supports for transactions and Almost all relational databases today, and some nonrelational databases, support transactions.
 
 A key feature of a transaction is that it can be aborted and safely retried if an error occurred. ACID databases are based on this philosophy.
@@ -11,12 +13,14 @@ A key feature of a transaction is that it can be aborted and safely retried if a
 >**Atomicity**
 - The ability to **abort** a transaction on error and have all writes from that transaction discarded
 - giving an all-or-nothing guarantee
+- example: if a client wants to make several writes, but a fault occurs (crashes, connection is interrupted,...), a transaction cannot be completed, then the transaction is aborted and the database must discard or undo any writes
 
 *if a transaction was aborted, the application can be sure that it didn’t change anything, so it can safely be retried*
 
 >**Consistency**
 - Database being in a “good state”
 - **No constraint violation** is triggered (such as: foreign key, unique,...)
+- example: in bank account, credits and debits across all accounts must always be balanced. Any writes during the transaction preserve the validity to ensure the invariants are always satisfied.
 
 *However, in general, the application defines what data is valid or invalid, the database only stores it.*
 
@@ -24,10 +28,12 @@ A key feature of a transaction is that it can be aborted and safely retried if a
 - Concurrency issues (race conditions) only come into play when one transaction reads/modify data that is concurrently read/modified by another transaction.
 - The database ensures that when the transactions have committed, **the result is the same** even though in reality they may have run concurrently
 - **serializable isolation** means that the database guarantees that transactions have the same effect as if they ran **serially**. *In practice, serializable isolation is rarely used, because it carries a performance penalty.*
+- example: 2 clients simultaneously incrementing a counter, they read value (value = 42), add 1 (value = 43), and write the new value back. Isolation ensure the value should be come from 42 to 44.
 
 >**Durability**
 - A successful transaction must **permanently change the state of a system**
 - The promise that once a transaction has committed successfully, any data it has written will not be forgotten, even if there is a hardware fault or the database crashes
+- example: the updates and modifications to the database are stored in and written to disk and they persist even if a system failure occurs. These updates now become permanent and are stored in non-volatile memory.
 
 *a database must wait until writes or replications are completed before reporting a transaction as successfully committed*
 
