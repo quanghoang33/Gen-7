@@ -19,7 +19,7 @@ impl<'a> Grid<'a> {
         };
     }
 
-    fn count_lands_aka_dfs(&mut self, r: usize, c: usize) -> u32 {
+    fn count_lands_aka_bfs(&mut self, r: usize, c: usize) -> u32 {
         self.visited[r][c] = true;
         let mut count = 1;
 
@@ -34,7 +34,7 @@ impl<'a> Grid<'a> {
                 && !self.visited[i as usize][j as usize]
                 && self.matrix[i as usize][j as usize] == 1
             {
-                count += self.count_lands_aka_dfs(i as usize, j as usize);
+                count += self.count_lands_aka_bfs(i as usize, j as usize);
             }
         }
 
@@ -48,7 +48,7 @@ fn max_area_of_island(grid: Vec<Vec<i32>>) -> i32 {
     for r in 0..grid.rows {
         for c in 0..grid.cols {
             if !grid.visited[r][c] && grid.matrix[r][c] == 1 {
-                max = max.max(grid.count_lands_aka_dfs(r, c));
+                max = max.max(grid.count_lands_aka_bfs(r, c));
             }
         }
     }
