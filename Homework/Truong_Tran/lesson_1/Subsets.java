@@ -8,7 +8,7 @@ public class Subsets {
     public static List<List<Integer>> subsets(int[] nums) {
         int size = nums.length;
         List<List<Integer>> result = new ArrayList<>();
-        int n = (int) Math.pow(2, size);
+        int n = 1 << nums.length;
         for (int i= 0; i < n; i++) {
             List<Integer> subList = new ArrayList<>();
             String s = toBinary(i, size);
