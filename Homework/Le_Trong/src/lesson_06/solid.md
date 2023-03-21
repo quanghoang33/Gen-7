@@ -145,6 +145,6 @@ impl<'a> UserDatabase<'a> {
 }
 ```
 
-We broke the multiple responsibilites User to single responsibility "classes". This will make the design flexible, easy to trace/read/understand because each class have only one task. But after apply SRP notice the amount of "classes" is now more than before.
+In applying the Single Responsibility Principle, we have transformed the original implementation of the User class that had multiple responsibilities into a set of smaller classes, each with a single responsibility. While the number of classes has increased, this approach leads to a more flexible design that is easier to trace, read, and understand.
 
-This principle require developer have to understand well the functionality of a class (What is the purpose of this class ?, ...) so we don't blindly apply the principle that can cause even more complex than the original design.
+It's worth noting that applying the SRP requires developers to have a clear understanding of the functionality of each class, and what its purpose is within the system. Blindly applying the principle without proper analysis can lead to an even more complex design than the original. Therefore, it's important to carefully consider the responsibilities of each class and ensure that they are well-defined and cohesive.
