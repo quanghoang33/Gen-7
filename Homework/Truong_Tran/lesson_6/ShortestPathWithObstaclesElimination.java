@@ -17,34 +17,34 @@ public class ShortestPathWithObstaclesElimination {
         }
         Queue<Node> queue = new ArrayDeque<>();
         queue.add(new Node(0, 0, k));
-        int depth = 0;
+        int res = 0;
+        int queueSize;
         while (!queue.isEmpty()) {
-            List<Node> next = new ArrayList<>();
-            while (!queue.isEmpty()) {
+            queueSize = queue.size();
+            for (int i = 0; i < queueSize; i++) {
                 Node node = queue.poll();
                 if (node.x == (height - 1) && node.y == (width - 1)) {
-                    return depth;
+                    return res;
                 }
-                for (int i = 0; i < 4; i++) {
-                    int x = node.x + dx[i];
-                    int y = node.y + dy[i];
+                for (int j = 0; j < 4; j++) {
+                    int x = node.x + dx[j];
+                    int y = node.y + dy[j];
                     if (x >= 0 && x < height && y >= 0 && y < width) {
                         if (grid[x][y] == 1) {
                             if (node.obs > 0 && visited[x][y] < node.obs - 1) {
                                 visited[x][y] = node.obs - 1;
-                                next.add(new Node(x, y, node.obs - 1));
+                                queue.add(new Node(x, y, node.obs - 1));
                             }
                         } else {
                             if (visited[x][y] < node.obs) {
                                 visited[x][y] = node.obs;
-                                next.add(new Node(x, y, node.obs));
+                                queue.add(new Node(x, y, node.obs));
                             }
                         }
                     }
                 }
             }
-            queue.addAll(next);
-            depth++;
+            res++;
         }
         return -1;
     }

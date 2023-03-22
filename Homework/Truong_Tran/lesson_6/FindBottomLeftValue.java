@@ -9,20 +9,19 @@ public class FindBottomLeftValue {
         Queue<TreeNode> queue = new ArrayDeque<>();
         queue.add(root);
         int res = root.val;
+        int queueSize;
+        TreeNode node;
         while (!queue.isEmpty()) {
-            List<TreeNode> next = new ArrayList<>();
-            while (!queue.isEmpty()) {
-                TreeNode node = queue.poll();
+            queueSize = queue.size();
+            res = queue.peek().val;
+            for (int i = 0; i < queueSize; i++) {
+                node = queue.poll();
                 if (node.left != null) {
-                    next.add(node.left);
+                    queue.add(node.left);
                 }
                 if (node.right != null) {
-                    next.add(node.right);
+                    queue.add(node.right);
                 }
-            }
-            queue.addAll(next);
-            if (!next.isEmpty()) {
-                res = next.get(0).val;
             }
         }
         return res;

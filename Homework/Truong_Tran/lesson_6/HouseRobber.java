@@ -3,26 +3,28 @@ import java.util.Map;
 
 public class HouseRobber {
 
+    Map<TreeNode, Integer> visitedMap = new HashMap<>();
+
     public int rob(TreeNode root) {
-        return robSub(root, new HashMap<>());
+        return robSub(root);
     }
 
-    private int robSub(TreeNode root, Map<TreeNode, Integer> map) {
+    private int robSub(TreeNode root) {
         if (root == null) return 0;
-        if (map.containsKey(root)) return map.get(root);
+        if (visitedMap.containsKey(root)) return visitedMap.get(root);
 
         int val = root.val;
 
         if (root.left != null) {
-            val += robSub(root.left.left, map) + robSub(root.left.right, map);
+            val += robSub(root.left.left) + robSub(root.left.right);
         }
 
         if (root.right != null) {
-            val += robSub(root.right.left, map) + robSub(root.right.right, map);
+            val += robSub(root.right.left) + robSub(root.right.right);
         }
 
-        val = Math.max(val, robSub(root.left, map) + robSub(root.right, map));
-        map.put(root, val);
+        val = Math.max(val, robSub(root.left) + robSub(root.right));
+        visitedMap.put(root, val);
 
         return val;
     }

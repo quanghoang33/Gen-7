@@ -12,26 +12,27 @@ public class BinaryTreeLevelOrderTraversal {
         }
         queue.add(root);
         List<List<Integer>> res = new ArrayList<>();
+        int queueSize;
+        List<Integer> subRes;
         while (!queue.isEmpty()) {
-            List<Integer> subRes = new ArrayList<>();
-            List<TreeNode> next = new ArrayList<>();
-            while (!queue.isEmpty()) {
+            queueSize = queue.size();
+            subRes = new ArrayList<>();
+            for (int i = 0; i < queueSize; i++) {
                 TreeNode node = queue.poll();
                 subRes.add(node.val);
                 if (node.left != null) {
-                    next.add(node.left);
+                    queue.add(node.left);
                 }
                 if (node.right != null) {
-                    next.add(node.right);
+                    queue.add(node.right);
                 }
             }
             res.add(subRes);
-            queue.addAll(next);
         }
-        List<List<Integer>> res1 = new ArrayList<>();
+        List<List<Integer>> reverseList = new ArrayList<>();
         for (int i = res.size() - 1; i >= 0; i--) {
-            res1.add(res.get(i));
+            reverseList.add(res.get(i));
         }
-        return res1;
+        return reverseList;
     }
 }

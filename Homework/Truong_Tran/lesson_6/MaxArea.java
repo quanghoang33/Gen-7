@@ -11,15 +11,15 @@ public class MaxArea {
         width = grid.length;
         height = grid[0].length;
         visited = new boolean[width][height];
-        int max = 0;
+        int res = 0;
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 count = 0;
                 dfs(grid, i, j);
-                max = Math.max(count, max);
+                res = Math.max(count, res);
             }
         }
-        return max;
+        return res;
     }
 
     public void dfs(int[][] grid, int x, int y) {
@@ -30,7 +30,7 @@ public class MaxArea {
                 int b = y + dy[k];
                 if (a >= 0 && a < width && b >= 0 && b < height) {
                     visited[a][b] = true;
-                     dfs(grid, a, b);
+                    dfs(grid, a, b);
                 }
             }
         }
