@@ -330,10 +330,10 @@ fn handle_payment(payment_gateway: Box<dyn PaymentProcessor>, amount: f32) {
 By refactor the code to use a base class (trait in Rust), `handle_payment()` can now run without breaking the program in case we forget to modify the code when new gateway is introduced. Because we you a base class, we can make sure that every sub-class can have the same behaviors of its parent.
 
 ### Interface Segregation Principle
-The Interface Segregation Principle (ISP) states that clients should not be forced to depend on interfaces they do not use (Big interface). ISP splits interfaces that are very large into smaller and more specific ones so that clients will only have to know about the methods that are of interest to them. Like other principles in SOLID apply ISP will make your code flexible, easy to update.
+The Interface Segregation Principle (ISP) is a fundamental principle of SOLID design that advocagted breadking large interfaces into smaller, more specific ones. The principle empahsizes that clients dhould not be forced to depend on methods or functionality that they don't need. Like other principles in SOLID apply ISP will make your code flexible, easy to maintain.
 
 ## Example
-Lets say we have a `Person` interface (we can use Trait in Rust), which have methods to get basic information `get_name()`, `get_age()` with some information about the job such as `get_profession()`, `get_salary()`
+Let's consider an example what we have a `Person` interface defined using a Rust Trait. The interface has methods to get basic information `get_name()`, `get_age()` with some information about the job such as `get_profession()`, `get_salary()`
 ```rust
 trait Person {
     fn get_name() -> String;
@@ -343,7 +343,7 @@ trait Person {
 }
 ```
 
-as a client who using this trait you need to implement all methods of that trait. But in real world, not all people have *profession* or *salary* like children so require a client to implement all of the methods even they don't use is cumbersome and unnessescery. Now lets wear a hat with the SOLID word on the font and apply the ISP to this situtation.
+But not all persons have professions or salaries (eg. children), which means that clients who use this interface are forced to implement all the methods, even though some of them might be irrelevent. Let's refactor the code by applying ISP.
 
 ```rust
 trait Person {
@@ -357,4 +357,4 @@ trait HasJob {
 }
 ```
 
-We broke the "big" `Person` interface into 2 smallers and speciific which are `Person` and `HasJob`. Now client can pick what they want.
+We broke the "big" `Person` interface into 2 smallers and speciific ones which are `Person` and `HasJob`. By doing this, clients can choose the interfaces that they need, without being forced to implement unnecessary methods.
