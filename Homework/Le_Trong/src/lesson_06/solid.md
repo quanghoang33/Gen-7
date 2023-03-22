@@ -233,11 +233,9 @@ impl PaymentProcessor {
     }
 }
 ```
-You added an `PaymentGateway` enum and modifed `PaymentProcessor.process()` again.
+As you can see, every time a new payment gateway is introduced, you need to modify the existing code, which can risk breaking it.
 
-The key point here is that every times new payment gateway is introduced you need to modify the exisiting code risking break it.
-
-Lets refactor the code by applying OCP. First, we will rollback the system to support only PayPal.
+Now, let's refactor the code by applying OCP. First, we will revert the system to support only PayPal.
 ```rust
 trait PaymentProcessor {
     fn process(amount: f32) -> bool
@@ -254,7 +252,7 @@ impl PaymentProcessor for PayPalGateway {
 }
 ```
 
-Now we will add Stripe and Apple.
+Next, we will add Stripe and Apple Pay gateways..
 ```rust
 ...
 
@@ -278,4 +276,4 @@ impl PaymentProcessor for AppleGateway {
     }
 }
 ```
-You can see that we just introduced new struct for each payment gateway by implement `PaymentProcessor` trait for them. We neither modify the `PaymentProcessor` trait nor touch the `PayPalGateway`.
+You can see that we've introduced new struct for each payment gateway and implemented `PaymentProcessor` trait for them without modifing the `PaymentProcessor` trait or touching the `PayPalGateway` struct.
