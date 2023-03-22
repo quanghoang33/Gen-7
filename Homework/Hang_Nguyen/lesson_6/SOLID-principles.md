@@ -53,5 +53,99 @@ Solve the problem by applying the *Shipping* interface. And those shipping type 
 
 | Order      | interface Shipping      | 
 | ----------- | ----------- |
-| shipping: Shipping   |    getCost()
+| shipping: Shipping   |    getCost()   |
 | getShippingCost()  //return shipping.getCost() |
+
+<b><h2>Liskov Substitution Principle</h2></b>
+
+*Objects of a superclass should be replaceable with objects of its subclasses without breaking the application*
+
+The substitution principle is a set of checks that help predict whether a subclass remains compatible with the code that was able to work with objects of the superclass.
+
+For example:
+
+Imagine you had *SetWidth* and *SetHeight* methods on your *Rectangle* base class; this seems perfectly logical. However if your *Rectangle* reference pointed to a *Square*, then *SetWidth* and *SetHeight* doesn't make sense because setting one would change the other to match it. 
+In this case *Square* fails the Liskov Substitution. Test with *Rectangle* and the abstraction of having *Square* inherit from *Rectangle* is a bad one.
+
+| Rectangle      | Square extends Rectangle      | 
+| ----------- | ----------- |
+| setWidth()  |    setWidth() // width should be equal to heigh  |
+| setHeigh() |  setHeigh() // heigh should be equal to width     |
+
+<b><h2>Interface Segregation Principle</h2></b>
+
+*Clients shouldn’t be forced to depend on methods they do not use.*
+
+Try to make your interfaces narrow enough that client classes don’t have to implement behaviors they don’t need.
+
+For example:
+
+> BEFORE
+
+You design an interface coverd the full set of cloud services and features of AWS. When it came to implementing support for another provider, some methods describe features that other cloud providers just don’t have.
+
+| interface CloudProvider      | Amazone implements CloudProvider      | DropBox implements CloudProvider      | 
+| ----------- | ----------- | ----------- |
+| storeFile(name)       |    storeFile(name)        | storeFile(name)   |
+| getFile(name)         |  getFile(name)            | getFile(name)      |
+| listServers(region)   |  listServers(region)      | listServers(region) //not supported     |
+
+> AFTER
+
+The better approach is to break down the interface into parts.
+
+| interface CloudHostingProvider      | interface CDNProvider      | interface CloudStorageProvider      | 
+| ----------- | ----------- | ----------- |
+| createServer(region)  |    getCDNAddress()   | storeFile(name)   |
+| listServers(region)   |                      | getFile(name)      |
+|                       |                      |                    |
+
+| Amazon implements CloudHostingProvider, CDNProvider, CloudStorageProvider      | DropBox implements CloudStorageProvider      | 
+| ----------- | ----------- |
+|  storeFile(name)              | storeFile(name)   |
+|  getFile(name)                | getFile(name)      |
+|  createServer(region)         |                   |
+|  listServers(region)          |                   |
+|  getCDNAddress()              |                   |
+
+*Note: Remember that the more interfaces you create, the more complex your code becomes. Keep the balance.*
+
+<b><h2>Dependency Inversion Principle</h2></b>
+
+*High-level classes **shouldn’t** depend on low-level classes. Both should depend on abstractions.*
+
+*Abstractions **shouldn’t** depend on details. Details should depend on abstractions.*
+
+**Low-level classes:** implement basic operations such as working with a disk, transferring data over a network, connecting to a database, etc.
+
+**High-level classes:** contain complex business logic that directs low-level classes to do something.
+
+For example:
+
+> BEFORE
+
+A high-level BudgetReport depends on low-level MySQLDatabase
+
+| BudgetReport //high-level      | MySQLDatabase //low-level      | 
+| ----------- | ----------- |
+| - database:  MySQLDatabase    |                |
+| open(date)                    |    insert() |
+| save()                        |    update()     |
+|                               |    delete()     |
+
+> AFTER
+
+You can fix this problem by creating a high-level interface that describes read/write operations and making the report class use that interface instead of the low-level class.
+
+| interface Database      | BudgetReport      | 
+| ----------- | ----------- |
+| delete()          |    database: Database     |
+| update()          |    insert()       |
+| delete()          |    update()       |
+|                   |    delete()       |
+
+| MySQL implements Database      | MongoDB implements Database      | 
+| ----------- | ----------- |
+| insert()          |    insert()       |
+| update()          |    update()       |
+| delete()          |    delete()       |
