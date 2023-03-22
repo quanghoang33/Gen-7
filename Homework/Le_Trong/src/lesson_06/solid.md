@@ -277,3 +277,84 @@ impl PaymentProcessor for AppleGateway {
 }
 ```
 You can see that we've introduced new struct for each payment gateway and implemented `PaymentProcessor` trait for them without modifing the `PaymentProcessor` trait or touching the `PayPalGateway` struct.
+
+## Liskov Substitution Principle
+The Liskov Substitution Principle (LSP) is a particular definition of a subtyping relation, that was initially introduced by Barbara Liskov in 1987. LSP states that a class can be replaced by its sub-class without breaking the program.
+
+### Example
+We continue with the Payment Gateway example. If we want to use one of gateways we could create 3 functions for `PayPalGateway`, `AppleGateway`, `StripeGateway`.
+
+```rust
+fn handle_payment_using_pay_pal(pay_pal: PayPalGateway) {
+    pay_pal.process(50);
+}
+
+fn handle_payment_using_apple_pay(apple_pay: ApplePayGateway) {
+    apple_pay.process(30);
+}
+
+fn handle_payment_using_stripe(stripe: StripeGateway) {
+    stripe.process(40);
+}
+```
+
+or create a function with conditional creation of instances.
+
+```rust
+fn handle_payment(amount f32, gateway: PaymentGateway) {
+    match gateway {
+        PaymentGateway::Stripe => {
+            let stripe = StripGateway::new();
+            stripe.process(amount);
+        },
+        PaymentGateway::PayPal => {
+            let pay_pal = PayPalGateway::new();
+            pay_pal.process(amount);
+        },
+        PaymentGateway::ApplePay => {
+            let apple_pay = ApplePayGateway::new();
+            apple_pay.process(amount);
+        },
+    }
+}
+```
+
+As you can see everytime you add new gateway for the system you need to modify the `handle_payment()` to support that new one. By applying LSP we ensure that the `handle_payment()` can run with new gateway without modifying it.
+
+```rust
+fn handle_payment(payment_gateway: Box<dyn PaymentProcessor>, amount: f32) {
+    payment_gateway.process(amount); 
+}
+```
+
+By refactor the code to use a base class (trait in Rust), `handle_payment()` can now run without breaking the program in case we forget to modify the code when new gateway is introduced. Because we you a base class, we can make sure that every sub-class can have the same behaviors of its parent.
+
+### Interface Segregation Principle
+The Interface Segregation Principle (ISP) states that clients should not be forced to depend on interfaces they do not use (Big interface). ISP splits interfaces that are very large into smaller and more specific ones so that clients will only have to know about the methods that are of interest to them. Like other principles in SOLID apply ISP will make your code flexible, easy to update.
+
+## Example
+Lets say we have a `Person` interface (we can use Trait in Rust), which have methods to get basic information `get_name()`, `get_age()` with some information about the job such as `get_profession()`, `get_salary()`
+```rust
+trait Person {
+    fn get_name() -> String;
+    fn get_age() -> u8;
+    fn get_profession() -> String;
+    fn get_salary() -> f64;
+}
+```
+
+as a client who using this trait you need to implement all methods of that trait. But in real world, not all people have *profession* or *salary* like children so require a client to implement all of the methods even they don't use is cumbersome and unnessescery. Now lets wear a hat with the SOLID word on the font and apply the ISP to this situtation.
+
+```rust
+trait Person {
+    fn get_name() -> String;
+    fn get_age() -> u8;
+}
+
+trait HasJob {
+    fn get_profession() -> String;
+    fn get_salary() -> f64;
+}
+```
+
+We broke the "big" `Person` interface into 2 smallers and speciific which are `Person` and `HasJob`. Now client can pick what they want.
