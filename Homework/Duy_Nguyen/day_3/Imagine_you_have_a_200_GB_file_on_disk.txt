@@ -1,0 +1,20 @@
+
+Step 1:
+
+Create a hash function for String 
+
+Step 2:
+
+Map from original file path with hash value
+
+[hash_1: file_1_path]
+[hash_2: file_2_path]
+...
+
+Step 3: 
+
+Sort hash value
+
+Step 4: 
+
+Remap from hash value to file path
