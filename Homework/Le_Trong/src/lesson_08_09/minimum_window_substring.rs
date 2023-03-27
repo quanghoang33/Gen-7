@@ -1,14 +1,8 @@
 use std::collections::HashMap;
 
 /**
-* s = "ADOBECODEBANC", t = "ABC"
-
-valid_s_1 = "ADOBECODEBANC"
-valid_s_2 = "BANC"
-result min (s_1.len(), s_2.len()) => s_2 = "BANC"
-
-Brute force
-
+Hint:
+s = "ADOBECODEBANC", t = "ABC"
           i
 ADOBECODEBANC ABC
              j
@@ -38,62 +32,74 @@ hash[a] = 0
 hash[b] = 0
 */
 fn min_window(s: String, t: String) -> String {
-    let mut result = "".to_string();
+    let s_bytes = s.as_bytes();
+    let t_bytes = t.as_bytes();
+    let mut result: Option<&[u8]> = None;
 
+    // Edge cases
     if s.len() < t.len() {
-        return result;
+        return "".to_string();
     }
-
     if s == t {
         return s;
     }
 
+    // use to count the character's appearance
+    // in the current window sliding.
+    let mut window_count = HashMap::new();
+
+    // Build a hash map that count the number of appearance
+    // of a character in t string.
+    let mut t_count = HashMap::new();
+    for &byte in t_bytes {
+        let count = t_count.entry(byte).or_insert(0);
+        *count += 1;
+    }
+    // Rules == number of unique characters of t string.
+    let mut rules = t_count.len();
+
     let (mut slow, mut fast) = (0, 0);
     while fast < s.len() {
-        let sub_string = &s[slow..=fast];
+        let byte = s_bytes[fast];
 
-        if sub_string.len() < t.len() {
-            fast += 1;
-            continue;
+        let count = window_count.entry(byte).or_insert(0);
+        *count += 1;
+
+        // If current window[char] == t_count[char] we say that
+        // we passed a rule.
+        if t_count.contains_key(&byte) && *count == t_count[&byte] {
+            rules -= 1;
         }
 
-        // Buid array-based hashtable for checking substring.
-        let mut hash = HashMap::new();
-        for char in t.chars() {
-            let count = hash.entry(char).or_insert(0);
-            *count += 1;
-        }
-        let mut valid = true;
-        for char in sub_string.chars() {
-            if hash.contains_key(&char) {
-                let count = hash.get_mut(&char).unwrap();
+        // If we passed all rules it means we 
+        // found a valid substring. So we need
+        // do one more thing is finding smallest
+        // valid substring in the valid substring.
+        while rules == 0 {
+            let slow_byte = &s_bytes[slow];
+            let sub_string = &s_bytes[slow..=fast];
+
+            if result.is_none() || result.as_ref().unwrap().len() > sub_string.len() {
+                result = Some(sub_string);
+            }
+
+            if let Some(count) = window_count.get_mut(slow_byte) {
                 *count -= 1;
-            }
-        }
-        for (_, count) in &hash {
-            if *count > 0 {
-                valid = false;
-                break;
-            }
-        }
-
-        if valid {
-            if result == "" || result.len() > sub_string.len() {
-                result = sub_string.to_string();
+                if t_count.contains_key(slow_byte) && *count < t_count[slow_byte] {
+                    rules += 1;
+                }
             }
             slow += 1;
-        } else {
-            fast += 1;
         }
+
+        fast += 1;
     }
 
-    return result;
+    return result.map_or("".to_string(), |bytes| String::from_utf8(bytes.to_vec()).unwrap());
 }
 
 #[cfg(test)]
 mod tests {
-    use std::ascii::AsciiExt;
-
     use super::min_window;
 
     #[test]
@@ -106,5 +112,12 @@ mod tests {
         assert_eq!("a".to_string(), min_window("a".to_string(), "a".to_string()));
 
         assert_eq!("".to_string(), min_window("a".to_string(), "aa".to_string()));
+
+        assert_eq!("ba".to_string(), min_window("bba".to_string(), "ab".to_string()));
+
+        assert_eq!(
+            "baa".to_string(),
+            min_window("bbaa".to_string(), "aba".to_string())
+        );
     }
 }
