@@ -1,24 +1,28 @@
 fn ship_within_days(weights: Vec<i32>, days: i32) -> i32 {
-    let mut min_capacity = weights.iter().max().unwrap();
+    let mut min_capacity = *weights.iter().max().unwrap();
     let mut max_capacity: i32 = weights.iter().sum();
-    let mut result = 0;
 
-    for i in *min_capacity..=max_capacity {
+    while min_capacity < max_capacity {
+        let mid = min_capacity + (max_capacity - min_capacity) / 2;
         let mut days_needed = 1;
         let mut current_load = 0;
+
         for weight in weights.iter() {
             current_load += weight;
-            if current_load > i {
+            if current_load > mid {
                 days_needed += 1;
                 current_load = *weight;
             }
         }
+
         if days_needed <= days {
-            result = if result == 0 { i } else { result.min(i) };
+            max_capacity = mid;
+        } else {
+            min_capacity = mid + 1;
         }
     }
 
-    return result;
+    return min_capacity;
 }
 
 #[cfg(test)]
