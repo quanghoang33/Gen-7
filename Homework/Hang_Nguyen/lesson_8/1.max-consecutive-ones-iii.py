@@ -1,13 +1,13 @@
 # https://leetcode.com/problems/max-consecutive-ones-iii/
 class Solution():
     def longestOnes(self, nums, k):
-        i = 0
-        for j in range(len(nums)):
-            k -= 1 - nums[j]
+        left = 0
+        for right in range(len(nums)):
+            if nums[right] == 0: k -= 1
             if k < 0:
-                k += 1 - nums[i]
-                i += 1
-        return j - i + 1
+                if nums[left] == 0: k += 1
+                left += 1
+        return right - left + 1
 
 # TEST CASE
 solution = Solution()
