@@ -1,30 +1,34 @@
 # https://leetcode.com/problems/minimum-window-substring/
-import collections
 
 class Solution(object):
     def minWindow(self, s, t):
-        target_count = collections.Counter(t)
-        start, end = 0, 0
-        min_window = ''
-        target_len = len(t)
+        if t == '': return ''
+        countT, window = {}, {}
+
+        for c in t:
+            countT[c] = 1 + countT.get(c, 0)
         
-        for end in range(len(s)):
-            if target_count[s[end]] > 0:
-                target_len -= 1
-                
-            target_count[s[end]] -= 1
-            while target_len == 0:
-                window_len = end - start + 1
-                
-                if not min_window or window_len < len(min_window):
-                    min_window = s[start:end + 1]
-                    
-                target_count[s[start]] += 1
-                if target_count[s[start]] > 0:
-                    target_len += 1
-                start += 1
-                
-        return min_window
+        have, need = 0, len(countT)
+        res, resLen = [-1, -1], float("inf")
+        l = 0
+
+        for r in range(len(s)):
+            c = s[r]
+            window[c] = 1 + window.get(c, 0)
+            if c in countT and window[c] == countT[c]:
+                have += 1
+            while have == need:
+                # update result
+                if (r - l + 1) < resLen:
+                    res = [l, r]
+                    resLen = (r - l + 1)
+                # pop left
+                window[s[l]] -= 1
+                if s[l] in countT and window[s[l]] < countT[s[l]]:
+                    have -=1
+                l += 1
+        l, r = res
+        return s[l:r + 1] if resLen != float("inf") else ""
 
 # TEST CASE
 solution = Solution()
