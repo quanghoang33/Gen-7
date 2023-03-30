@@ -41,3 +41,6 @@ nums = [2,5,6,0,0,1,2]
 target = 5
 
 print(solution.search(nums, target))
+
+target = 3
+print(solution.search(nums, target))
