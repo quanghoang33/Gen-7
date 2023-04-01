@@ -10,15 +10,17 @@ class Solution(object):
             for c in range(n):
                 if grid[r][c]:
                     q.append([r,c])
+
         res = -1
-        direct = [[0,1], [1,0], [0,-1], [-1,0]]
+        direct = [[0,1], [0,-1], [1,0], [-1,0]] #right, left, down, up
+
         while q:
             r, c = q.popleft()
 
             res = grid[r][c]
             for dr, dc in direct:
                 newR, newC = r + dr, c + dc
-                if min(newR, newC) >= 0 and max(newR, newC) < n and grid[newR][newC] == 0:
+                if min(newR, newC) >= 0 and max(newR, newC) < n and grid[newR][newC] == 0: # check out of bound and water cell
                     q.append([newR, newC])
                     grid[newR][newC] = grid[r][c] + 1
         
