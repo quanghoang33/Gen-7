@@ -1,20 +1,20 @@
 # https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/
 class TreeNode(object):
-    def __init__(self, x):
+    def __init__(self, x, left = None, right = None):
         self.val = x
-        self.left = None
-        self.right = None
+        self.left = left
+        self.right = right
 
 class Solution(object):
     def lowestCommonAncestor(self, root, p, q):
-        small = min(p.val, q.val)
-        large = max(p.val, q.val)
+        small = min(p, q)
+        large = max(p, q)
         while root:
-            if root.val > large:  # p, q belong to the left subtree
+            if root.val > large:
                 root = root.left
-            elif root.val < small:  # p, q belong to the right subtree
+            elif root.val < small:
                 root = root.right
-            else:  # Now, small <= root.val <= large -> This is the LCA between p and q
+            else:
                 return root
         return None
 
@@ -22,3 +22,8 @@ class Solution(object):
 # TEST CASE
 solution = Solution()
 
+left = TreeNode(2, TreeNode(0), TreeNode(4))
+right = TreeNode(8, TreeNode(7), TreeNode(9))
+root = TreeNode(6, left, right)
+
+solution.lowestCommonAncestor(root, 7, 9)
