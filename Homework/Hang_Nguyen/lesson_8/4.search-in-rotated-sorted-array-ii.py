@@ -1,37 +1,23 @@
 # https://leetcode.com/problems/search-in-rotated-sorted-array-ii/
 class Solution(object):
     def search(self, nums, target):
-        if len(nums) == 1:
-            return nums[0] != target
-
-        left, right = 0, len(nums)-1
-
-        while left <= right:
-            
-            # remove duplicate ones
-            while left < right and nums[left] == nums[left+1]:
-                left += 1
-            while left < right and nums[right] == nums[right-1]:
-                right -= 1
-  
-            mid= (left+right)//2
-
+        l, r = 0, len(nums)-1
+        while l <= r:
+            mid = l + (r-l)/2
             if nums[mid] == target:
                 return True
-
-            if nums[left] <= nums[mid]:
-                if nums[left] <= target and target <= nums[mid] :
-                    right = mid-1
+            elif nums[l] < nums[mid]: #[left..mid] increase
+                if nums[l] <= target and target < nums[mid]: # target between [left..mid]
+                    r = mid
                 else:
-                    left = mid+1
-
+                    l = mid + 1
+            elif nums[l] > nums[mid]: #[mid..right] increase
+                if nums[mid] < target and target <= nums[r]: # target between [mid..right]
+                    l = mid + 1
+                else:
+                    r = mid
             else:
-                if nums[mid] <= target and target <= nums[right]:
-                    left = mid+1
-                else:
-                    right = mid-1
-
-        # step 5
+                l += 1
         return False
 
 # TEST CASE
