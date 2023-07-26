@@ -330,7 +330,7 @@ fn handle_payment(payment_gateway: Box<dyn PaymentProcessor>, amount: f32) {
 By refactor the code to use a base class (trait in Rust), `handle_payment()` can now run without breaking the program in case we forget to modify the code when new gateway is introduced. Because we you a base class, we can make sure that every sub-class can have the same behaviors of its parent.
 
 ### Interface Segregation Principle
-The Interface Segregation Principle (ISP) is a fundamental principle of SOLID design that advocagted breadking large interfaces into smaller, more specific ones. The principle empahsizes that clients dhould not be forced to depend on methods or functionality that they don't need. Like other principles in SOLID apply ISP will make your code flexible, easy to maintain.
+The Interface Segregation Principle (ISP) is a fundamental principle of SOLID design that advocated breaking large interfaces into smaller, more specific ones. The principle emphasizes that clients dhould not be forced to depend on methods or functionality that they don't need. Like other principles in SOLID apply ISP will make your code flexible, easy to maintain.
 
 ## Example
 Let's consider an example what we have a `Person` interface defined using a Rust Trait. The interface has methods to get basic information `get_name()`, `get_age()` with some information about the job such as `get_profession()`, `get_salary()`
@@ -358,3 +358,66 @@ trait HasJob {
 ```
 
 We broke the "big" `Person` interface into 2 smallers and speciific ones which are `Person` and `HasJob`. By doing this, clients can choose the interfaces that they need, without being forced to implement unnecessary methods.
+
+
+### Dependency Inversion Principle
+Dependency Inversion Principle (DIP) is as method making the high-level modules and low-level modules loosely coupling by introducing the middle layer (Interfaces). 
+
+High-level modules are components that take care about bussiness domain functionality such as `getOrder`, `updateOrder`,... Low-level modules are components might be the database access layer. By using DIP, both of modules will not have a direct dependency on each other. Instead, they are depend on an abstraction or interface, this make easy to maintain, change as changing each module will not effect others.
+
+## Example
+The high-level module of a e-commerce system has a function to show customer's orders. In order to establish the task the high-level need to interact with the low-level which has access to database. By introducing the `DatabaseAccess` trait the interaction becomes independent between two modules. We can change the database to use other system instead of Sqlite as the code below without changing the high-level module.
+```rust
+// High level module
+trait DatabaseAccess {
+    fn connect(&self, url: &str) -> Result<(), String>;
+    fn query(&self, query: &str) -> Result<Vec<String>, String>;
+}
+
+struct Application {
+    database: Box<dyn DatabaseAccess>,
+}
+
+impl Application {
+    fn new(database: Box<dyn DatabaseAccess>) -> Self {
+        return Application {
+            database
+        };
+    }
+
+    fn show_orders(&mut self) {
+        self.database.connect("sqlite://e-commerce.sqlite").unwrap();
+
+        let orders = self.database.query("SELECT * FROM orders").unwrap();
+
+        println!("{:?}", orders);
+    }
+}
+```
+
+```rust
+// Low level module
+struct SqliteAccess {
+    connection: Option<Connection>,
+}
+
+impl DatabaseAccess for SqliteAccess {
+    fn connect(&self, url: &str) -> Result<(), String> {
+        let connection = Connection::open(url).map_err(|e| e.to_string())?;
+        self.connection = Some(connection);
+
+        return Ok(());
+    }
+
+    fn query(&self, query: &str) -> Result<Vec<String>, String> {
+        let connection = self.connection.as_ref().ok_or("not connected")?;
+        let mut stmt = connection.prepare(query).map_err(|e| e.to_string())?;
+        let rows = stmt.query_map([], |row| row.get(0)).map_err(|e| e.to_string())?;
+        let results: Vec<String> = rows.map(|r| r.unwrap()).collect();
+
+        return (Ok(results));
+    }
+}
+```
+
+

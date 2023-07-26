@@ -1,6 +1,7 @@
 pub mod lesson_01;
 pub mod lesson_03;
 pub mod lesson_06;
+pub mod lesson_08_09;
 
 use lesson_01::hamming_weight::hamming_weight;
 use lesson_01::happy_number::is_happy;
